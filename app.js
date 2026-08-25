@@ -91,15 +91,18 @@ function progressFor(s) {
 function showScreen(screenId) {
 
   // Hide every application screen
-  document.querySelectorAll(".screen").forEach(screen => {
+  document
+    .querySelectorAll(".screen")
+    .forEach(screen => {
 
-    screen.classList.remove("active");
+      screen.classList.remove("active");
 
-  });
+    });
 
 
   // Show requested screen
-  const target = document.getElementById(screenId);
+  const target =
+    document.getElementById(screenId);
 
   if (target) {
 
@@ -109,14 +112,16 @@ function showScreen(screenId) {
 
 
   // Update bottom navigation
-  document.querySelectorAll(".nav-btn").forEach(button => {
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(button => {
 
-    button.classList.toggle(
-      "active",
-      button.dataset.screen === screenId
-    );
+      button.classList.toggle(
+        "active",
+        button.dataset.screen === screenId
+      );
 
-  });
+    });
 
 
   window.scrollTo({
@@ -146,7 +151,8 @@ function renderHome() {
       const card =
         document.createElement("button");
 
-      card.className = "sankalpa-card";
+      card.className =
+        "sankalpa-card";
 
 
       card.innerHTML = `
@@ -214,7 +220,8 @@ function renderHome() {
 
 function renderJourney() {
 
-  const list = $("journeyList");
+  const list =
+    $("journeyList");
 
   list.innerHTML = "";
 
@@ -475,14 +482,16 @@ function showCelebration(s) {
 
 
   $("celebration")
-    .classList.remove("hidden");
+    .classList
+    .remove("hidden");
 }
 
 
 function closeCelebration() {
 
   $("celebration")
-    .classList.add("hidden");
+    .classList
+    .add("hidden");
 
   showScreen("journeyScreen");
 }
@@ -635,7 +644,7 @@ $("closeCelebration")
 
 
 // =========================================
-// TEMPLE ENTRANCE
+// TEMPLE ENTRANCE → LORD RAM DARSHAN
 // =========================================
 
 const enterTempleBtn =
@@ -644,17 +653,23 @@ const enterTempleBtn =
 const templeEntrance =
   $("templeEntrance");
 
+const ramReveal =
+  $("ramReveal");
+
 
 enterTempleBtn
   .addEventListener(
     "click",
     () => {
 
+      // First fade out the Temple Entrance.
       templeEntrance
         .classList
         .add("exit");
 
 
+      // After the entrance has faded,
+      // reveal Lord Ram.
       setTimeout(
         () => {
 
@@ -663,8 +678,59 @@ enterTempleBtn
             .add("hidden");
 
 
-          showScreen(
-            "homeScreen"
+          ramReveal
+            .classList
+            .remove("leaving");
+
+
+          ramReveal
+            .classList
+            .add("active");
+
+
+          /*
+           * Keep Lord Ram visible for
+           * approximately 2.8 seconds.
+           *
+           * Then reveal the existing
+           * Home screen and begin the
+           * gentle Ram fade-out.
+           */
+
+          setTimeout(
+            () => {
+
+              showScreen(
+                "homeScreen"
+              );
+
+
+              ramReveal
+                .classList
+                .add("leaving");
+
+            },
+            2800
+          );
+
+
+          /*
+           * Remove the Ram overlay completely
+           * after the 1.2 second fade-out.
+           */
+
+          setTimeout(
+            () => {
+
+              ramReveal
+                .classList
+                .remove(
+                  "active",
+                  "leaving"
+                );
+
+            },
+            4100
           );
 
         },
