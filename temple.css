@@ -1033,3 +1033,538 @@
 .ty-gate:not(.ty-hidden) ~ .bottom-nav {
   display: none;
 }
+
+
+/* =========================================================
+   11. SHARED PIECES FOR THE NEW SCREENS
+   ========================================================= */
+
+.ty-head { padding: 4px 20px 0; text-align: center; }
+
+.ty-head h1 {
+  font-family: var(--ty-serif);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ty-cream);
+  text-shadow: 0 0 28px rgba(255, 180, 70, 0.30);
+}
+
+.ty-head p {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--ty-muted);
+}
+
+.ty-subhead {
+  font-family: var(--ty-serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2.6px;
+  color: var(--ty-gold);
+  text-transform: uppercase;
+}
+
+.ty-list { padding: 14px 16px 0; }
+
+.ty-fineprint {
+  margin: 18px 20px 0;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--ty-muted);
+  opacity: 0.9;
+}
+
+.ty-fineprint b { color: var(--ty-gold); font-weight: 600; }
+
+.ty-empty-screen {
+  margin: 30px 20px;
+  padding: 26px 20px;
+  border: 1px dashed var(--ty-line);
+  border-radius: 18px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ty-muted);
+}
+
+/* form fields */
+.ty-field { display: block; margin-bottom: 15px; }
+
+.ty-field > span {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  color: var(--ty-gold);
+}
+
+.ty-field > span em { color: var(--ty-muted); font-style: normal; }
+
+.ty-field textarea,
+.ty-field input {
+  width: 100%;
+  padding: 12px 13px;
+  border-radius: 13px;
+  border: 1px solid rgba(244, 195, 106, 0.20);
+  background: rgba(12, 6, 3, 0.65);
+  color: var(--ty-cream);
+  font-family: var(--ty-serif);
+  font-size: 14.5px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.ty-field textarea:focus,
+.ty-field input:focus {
+  outline: none;
+  border-color: rgba(244, 195, 106, 0.55);
+  box-shadow: 0 0 0 3px rgba(244, 180, 80, 0.10);
+}
+
+.ty-field ::placeholder { color: rgba(194, 161, 115, 0.5); }
+
+/* destructive action — never the same weight as the gold button */
+.ty-danger {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 107, 26, 0.35);
+  background: rgba(90, 26, 10, 0.28);
+  color: #ffb489;
+  font-family: var(--ty-serif);
+  font-size: 13px;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+}
+
+.ty-danger:active { background: rgba(120, 34, 12, 0.45); }
+
+/* filter chips */
+.ty-chips {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 16px 16px 0;
+  flex-wrap: wrap;
+}
+
+.ty-chip {
+  padding: 7px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--ty-line);
+  background: rgba(30, 17, 8, 0.6);
+  color: var(--ty-muted);
+  font-family: var(--ty-serif);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.ty-chip.on {
+  color: #2a1607;
+  border-color: rgba(255, 230, 170, 0.5);
+  background: linear-gradient(180deg, #ffd684, #e8a317);
+  font-weight: 600;
+}
+
+/* month / year stepper */
+.ty-monthbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 16px 16px 0;
+  padding: 10px;
+  border-radius: 15px;
+  border: 1px solid var(--ty-line);
+  background: rgba(30, 17, 8, 0.55);
+}
+
+.ty-monthbar span {
+  min-width: 150px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--ty-cream);
+}
+
+.ty-step {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--ty-line);
+  background: rgba(60, 36, 16, 0.6);
+  color: var(--ty-gold);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   12. MENU DRAWER
+   ========================================================= */
+
+.ty-drawer { position: fixed; inset: 0; z-index: 200; visibility: hidden; }
+.ty-drawer.open { visibility: visible; }
+
+.ty-scrim {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: rgba(4, 2, 1, 0.72);
+  backdrop-filter: blur(3px);
+  transition: opacity 0.35s ease;
+}
+
+.ty-drawer.open .ty-scrim { opacity: 1; }
+
+.ty-drawer-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: min(310px, 84vw);
+  padding: 22px 16px calc(22px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.42s cubic-bezier(0.3, 0, 0.16, 1);
+
+  background:
+    radial-gradient(ellipse 90% 40% at 20% 0%, rgba(255, 150, 40, 0.14), transparent 70%),
+    linear-gradient(180deg, #241408, #0d0703);
+  border-right: 1px solid var(--ty-line);
+  box-shadow: 22px 0 60px rgba(0, 0, 0, 0.7);
+}
+
+.ty-drawer.open .ty-drawer-panel { transform: translateX(0); }
+
+.ty-drawer-head {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 18px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--ty-line);
+}
+
+.ty-drawer-head .om {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: var(--ty-deva);
+  font-size: 22px;
+  color: var(--ty-gold);
+  border: 1px solid rgba(244, 195, 106, 0.45);
+  background: radial-gradient(circle at 34% 28%, rgba(255, 205, 120, 0.28), rgba(38, 21, 9, 0.9));
+}
+
+.ty-drawer-head .t {
+  font-family: var(--ty-serif);
+  font-size: 17px;
+  color: var(--ty-cream);
+  letter-spacing: 1px;
+}
+
+.ty-drawer-head .s {
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ty-muted);
+}
+
+.ty-drawer-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  padding: 12px 12px;
+  margin-bottom: 3px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--ty-cream);
+  font-family: var(--ty-serif);
+  font-size: 14.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ty-drawer-item i {
+  width: 22px;
+  font-style: normal;
+  font-size: 16px;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.ty-drawer-item:active { background: rgba(244, 195, 106, 0.10); }
+
+.ty-drawer-sep {
+  margin: 16px 12px 7px;
+  font-size: 9.5px;
+  letter-spacing: 3px;
+  color: var(--ty-gold);
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+
+.ty-drawer-foot {
+  margin: 22px 12px 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--ty-line);
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--ty-muted);
+  opacity: 0.75;
+}
+
+
+/* =========================================================
+   13. EKADASHI CARD ON THE HOME SCREEN
+   ========================================================= */
+
+.ty-ekadashi {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: calc(100% - 40px);
+  margin: 12px 20px 0;
+  padding: 13px 15px;
+  border-radius: 18px;
+  border: 1px solid rgba(244, 195, 106, 0.26);
+  background:
+    radial-gradient(ellipse 60% 100% at 88% 50%, rgba(255, 150, 40, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(48, 30, 14, 0.8), rgba(18, 10, 4, 0.8));
+  font-family: var(--ty-serif);
+  color: var(--ty-cream);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ty-ekadashi .moon {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 20px;
+  border: 1px solid rgba(244, 195, 106, 0.35);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 214, 140, 0.3), rgba(30, 17, 8, 0.9));
+}
+
+.ty-ekadashi .body { flex: 1; min-width: 0; }
+
+.ty-ekadashi .lb {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--ty-gold);
+}
+
+.ty-ekadashi .nm {
+  margin-top: 3px;
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.ty-ekadashi .when { margin-top: 2px; font-size: 11.5px; color: var(--ty-muted); }
+
+.ty-ekadashi .cv { color: var(--ty-gold); opacity: 0.6; }
+
+.ty-ekadashi.is-today {
+  border-color: rgba(255, 200, 100, 0.6);
+  box-shadow: 0 0 26px rgba(255, 150, 40, 0.22);
+}
+
+
+/* =========================================================
+   14. PANCHANG ROWS  (Ekadashi list, festivals)
+   ========================================================= */
+
+.ty-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  width: 100%;
+  padding: 13px 14px;
+  margin-bottom: 9px;
+  border-radius: 16px;
+  border: 1px solid rgba(244, 195, 106, 0.13);
+  background: linear-gradient(180deg, rgba(74, 46, 19, 0.34), rgba(24, 13, 6, 0.5));
+  font-family: var(--ty-serif);
+  color: var(--ty-cream);
+  text-align: left;
+}
+
+.ty-row.today {
+  border-color: rgba(255, 200, 100, 0.55);
+  box-shadow: 0 0 22px rgba(255, 150, 40, 0.18);
+}
+
+.ty-row.past { opacity: 0.42; }
+
+.ty-date {
+  flex: none;
+  width: 50px;
+  text-align: center;
+}
+
+.ty-date .d {
+  font-size: 21px;
+  line-height: 1;
+  color: var(--ty-gold);
+}
+
+.ty-date .mo {
+  margin-top: 3px;
+  font-size: 9.5px;
+  letter-spacing: 1.6px;
+  color: var(--ty-muted);
+  text-transform: uppercase;
+}
+
+.ty-row .main { flex: 1; min-width: 0; }
+
+.ty-row .t { font-size: 15px; font-weight: 600; }
+
+.ty-row .sub {
+  margin-top: 3px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ty-muted);
+}
+
+.ty-flag {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 140, 40, 0.4);
+  background: rgba(120, 50, 14, 0.35);
+  font-size: 10px;
+  color: #ffc089;
+}
+
+.ty-group {
+  margin: 20px 4px 9px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--ty-gold);
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   15. REFLECTION + MANTRA ENTRIES
+   ========================================================= */
+
+.ty-entry {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(244, 195, 106, 0.13);
+  background: linear-gradient(180deg, rgba(74, 46, 19, 0.32), rgba(24, 13, 6, 0.5));
+  font-family: var(--ty-serif);
+  color: var(--ty-cream);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ty-entry .when {
+  font-size: 10.5px;
+  letter-spacing: 1.6px;
+  color: var(--ty-gold);
+  text-transform: uppercase;
+}
+
+.ty-entry .body {
+  margin-top: 7px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--ty-cream);
+  opacity: 0.92;
+}
+
+.ty-entry .mantra {
+  margin-top: 6px;
+  font-family: var(--ty-deva);
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--ty-gold);
+}
+
+.ty-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: 300;
+  translate: -50% 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--ty-line);
+  background: rgba(30, 17, 8, 0.96);
+  color: var(--ty-cream);
+  font-family: var(--ty-serif);
+  font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 0.3s ease, translate 0.3s ease;
+  pointer-events: none;
+}
+
+.ty-toast.show { opacity: 1; translate: -50% -10px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ty-drawer-panel, .ty-scrim, .ty-toast { transition-duration: 0.01ms; }
+}
+
+
+/* =========================================================
+   16. DECORATION MUST NOT SWALLOW TAPS
+
+   The halo, toran and lamps are large positioned layers that
+   overlap the top bar. Without this the hamburger button
+   cannot be tapped at all — the glow sits on top of it.
+   ========================================================= */
+
+.ty-halo,
+.ty-toran,
+.ty-finial,
+.ty-plinth,
+.ty-lamps,
+.ty-cap,
+.ty-shade,
+.ty-aarti,
+.ty-bloom,
+.ty-curtain,
+.ty-mandala,
+.ty-wall,
+.ty-vignette,
+.ty-embers { pointer-events: none; }
+
+/* the topbar stays above the sanctum whatever else happens */
+.ty-topbar { position: relative; z-index: 6; }
+
+/* the menu, reachable from any screen */
+.ty-float-menu {
+  position: fixed;
+  top: 18px;
+  right: 16px;
+  z-index: 120;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--ty-line);
+  background: rgba(30, 17, 8, 0.9);
+  color: var(--ty-gold);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}

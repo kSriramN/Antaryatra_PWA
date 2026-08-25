@@ -174,6 +174,11 @@
     </div>
 
 
+    <!-- EKADASHI -->
+
+    <button class="ty-ekadashi" id="ekadashiCard" hidden></button>
+
+
     <!-- TODAY’S SANKALPAS -->
 
     <div class="ty-sheet">
@@ -247,13 +252,9 @@
         🪔
       </div>
 
-      <h1>
-        New Sankalpa
-      </h1>
+      <h1 id="createHeading">New Sankalpa</h1>
 
-      <p>
-        Make a meaningful resolve.
-      </p>
+      <p id="createSubheading">Make a meaningful resolve.</p>
 
     </div>
 
@@ -290,15 +291,11 @@
         How often?
 
         <select id="frequencyInput">
-
-          <option value="daily">
-            Daily
-          </option>
-
-          <option value="weekly">
-            Weekly
-          </option>
-
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="fortnightly">Fortnightly</option>
+          <option value="monthly">Monthly</option>
+          <option value="ekadashi">Every Ekadashi</option>
         </select>
 
       </label>
@@ -337,11 +334,12 @@
       </label>
 
 
-      <button
-        class="primary-btn"
-        type="submit"
-      >
+      <button class="primary-btn" type="submit" id="saveSankalpaBtn">
         MAKE THIS SANKALPA
+      </button>
+
+      <button type="button" class="ty-danger" id="deleteSankalpaBtn" hidden>
+        Release this Sankalpa
       </button>
 
     </form>
@@ -386,22 +384,230 @@
       ← Back
     </button>
 
-    <div class="temple-heading">
+    <div class="ty-head">
+      <h1>My Journey</h1>
+      <p>Promises made. Promises kept.</p>
+    </div>
 
-      <h1>
-        My Journey
-      </h1>
+    <div class="ty-chips" id="journeyFilters">
+      <button class="ty-chip on" data-filter="active">Active</button>
+      <button class="ty-chip" data-filter="completed">Completed</button>
+      <button class="ty-chip" data-filter="all">All</button>
+    </div>
 
-      <p>
-        Promises made. Promises kept.
-      </p>
+    <div id="journeyList" class="ty-list"></div>
+
+  </section>
+
+
+
+  <!-- =========================================
+       MENU DRAWER
+       ========================================= -->
+
+  <button id="globalMenuBtn" class="ty-float-menu" aria-label="Open menu" hidden>☰</button>
+
+  <div id="drawer" class="ty-drawer" aria-hidden="true">
+
+    <div class="ty-scrim" data-close-drawer></div>
+
+    <nav class="ty-drawer-panel">
+
+      <div class="ty-drawer-head">
+        <div class="om">ॐ</div>
+        <div>
+          <div class="t">Antar Yatra</div>
+          <div class="s" id="drawerPanchang">—</div>
+        </div>
+      </div>
+
+      <button class="ty-drawer-item" data-go="createScreen"><i>🪔</i>New Sankalpa</button>
+      <button class="ty-drawer-item" data-go="journeyScreen"><i>🌿</i>My Journey</button>
+      <button class="ty-drawer-item" data-go="reflectionsScreen"><i>📿</i>Reflections</button>
+      <button class="ty-drawer-item" data-go="mantrasScreen"><i>🕉</i>My Mantras</button>
+
+      <div class="ty-drawer-sep">Panchang</div>
+
+      <button class="ty-drawer-item" data-go="ekadashiScreen"><i>🌙</i>Ekadashi</button>
+      <button class="ty-drawer-item" data-go="festivalsScreen"><i>🎆</i>Festivals</button>
+
+      <div class="ty-drawer-sep">My data</div>
+
+      <button class="ty-drawer-item" id="exportBtn"><i>⬇</i>Export everything</button>
+      <button class="ty-drawer-item" id="importBtn"><i>⬆</i>Import from a file</button>
+      <button class="ty-drawer-item" id="locBtn"><i>📍</i><span id="locLabel">Set my location</span></button>
+
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+
+      <div class="ty-drawer-foot">
+        Panchang is computed on this device.<br>
+        Nothing you write here leaves it.
+      </div>
+
+    </nav>
+
+  </div>
+
+
+  <!-- =========================================
+       REFLECTIONS
+       ========================================= -->
+
+  <section id="reflectionsScreen" class="screen">
+
+    <button class="back-btn" data-back>← Back</button>
+
+    <div class="ty-head">
+      <h1>Reflection</h1>
+      <p id="reflectionStamp">—</p>
+    </div>
+
+    <div class="ty-sheet">
+
+      <label class="ty-field">
+        <span>What did you learn today?</span>
+        <textarea id="refLearned" rows="3"
+          placeholder="It helped me understand the teachings more deeply."></textarea>
+      </label>
+
+      <label class="ty-field">
+        <span>What was difficult?</span>
+        <textarea id="refDifficult" rows="3"
+          placeholder="Managing time on some days."></textarea>
+      </label>
+
+      <label class="ty-field">
+        <span>What will you continue?</span>
+        <textarea id="refContinue" rows="3"
+          placeholder="I will continue reading every day."></textarea>
+      </label>
+
+      <button class="ty-cta" id="saveReflection">SAVE REFLECTION 🪔</button>
 
     </div>
 
-    <div
-      id="journeyList"
-      class="sankalpa-list"
-    ></div>
+    <div class="ty-head" style="margin-top:26px">
+      <h2 class="ty-subhead">Earlier reflections</h2>
+    </div>
+
+    <div id="reflectionList" class="ty-list"></div>
+
+  </section>
+
+
+  <!-- =========================================
+       MANTRAS
+       ========================================= -->
+
+  <section id="mantrasScreen" class="screen">
+
+    <button class="back-btn" data-back>← Back</button>
+
+    <div class="ty-head">
+      <h1>My Mantras</h1>
+      <p>The ones you have learned.</p>
+    </div>
+
+    <div id="mantraList" class="ty-list"></div>
+
+    <button class="ty-cta" id="addMantraBtn" style="margin:16px">✦&nbsp; ADD A MANTRA &nbsp;✦</button>
+
+  </section>
+
+
+  <section id="mantraEditScreen" class="screen">
+
+    <button class="back-btn" data-back>← Back</button>
+
+    <div class="ty-head">
+      <h1 id="mantraEditTitle">Add a Mantra</h1>
+    </div>
+
+    <div class="ty-sheet">
+
+      <label class="ty-field">
+        <span>Title</span>
+        <input id="mantraTitle" type="text" placeholder="Gayatri Mantra">
+      </label>
+
+      <label class="ty-field">
+        <span>The mantra</span>
+        <textarea id="mantraText" rows="4"
+          placeholder="ॐ भूर्भुवः स्वः…"></textarea>
+      </label>
+
+      <label class="ty-field">
+        <span>Meaning <em>(optional)</em></span>
+        <textarea id="mantraMeaning" rows="3"
+          placeholder="What it means to you."></textarea>
+      </label>
+
+      <label class="ty-field">
+        <span>Where it is from <em>(optional)</em></span>
+        <input id="mantraSource" type="text" placeholder="Rig Veda 3.62.10">
+      </label>
+
+      <button class="ty-cta" id="saveMantra">SAVE MANTRA</button>
+
+      <button class="ty-danger" id="deleteMantra" hidden>Delete this mantra</button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================
+       EKADASHI
+       ========================================= -->
+
+  <section id="ekadashiScreen" class="screen">
+
+    <button class="back-btn" data-back>← Back</button>
+
+    <div class="ty-head">
+      <h1>Ekadashi</h1>
+      <p id="ekadashiPlace">—</p>
+    </div>
+
+    <div class="ty-monthbar">
+      <button id="ekPrev" class="ty-step">‹</button>
+      <span id="ekMonth">—</span>
+      <button id="ekNext" class="ty-step">›</button>
+    </div>
+
+    <div id="ekadashiList" class="ty-list"></div>
+
+    <p class="ty-fineprint">
+      Computed for your location from the tithi at sunrise
+      (Smarta reckoning). Where a day is marked
+      <b>close to sunrise</b>, the tithi clears sunrise by only
+      minutes and a panchang from another town may show the day
+      before — worth confirming before a fast.
+    </p>
+
+  </section>
+
+
+  <!-- =========================================
+       FESTIVALS
+       ========================================= -->
+
+  <section id="festivalsScreen" class="screen">
+
+    <button class="back-btn" data-back>← Back</button>
+
+    <div class="ty-head">
+      <h1>Festivals</h1>
+      <p id="festYearLabel">—</p>
+    </div>
+
+    <div class="ty-monthbar">
+      <button id="festPrev" class="ty-step">‹</button>
+      <span id="festYear">—</span>
+      <button id="festNext" class="ty-step">›</button>
+    </div>
+
+    <div id="festivalList" class="ty-list"></div>
 
   </section>
 
@@ -457,6 +663,7 @@
        JAVASCRIPT
        ========================================= -->
 
+  <script type="module" src="panchang.js"></script>
   <script src="app.js"></script>
 
 </body>
