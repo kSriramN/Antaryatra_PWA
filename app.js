@@ -30,175 +30,684 @@ const seed = [
   }
 ];
 
-let sankalpas = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || seed;
-let energy = Number(localStorage.getItem("antar-yatra-energy") || 72);
+let sankalpas =
+  JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || seed;
+
+let energy =
+  Number(localStorage.getItem("antar-yatra-energy") || 72);
+
+
+// =========================================
+// HELPERS
+// =========================================
 
 const $ = (id) => document.getElementById(id);
 
+
 function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(sankalpas));
-  localStorage.setItem("antar-yatra-energy", String(energy));
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(sankalpas)
+  );
+
+  localStorage.setItem(
+    "antar-yatra-energy",
+    String(energy)
+  );
 }
 
-function showScreen(id) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  $(id).classList.add("active");
-  document.querySelectorAll(".nav-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.screen === id);
-  });
-  window.scrollTo({top: 0, behavior: "smooth"});
+
+function escapeHtml(value) {
+
+  return String(value).replace(
+    /[&<>"']/g,
+    c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[c])
+  );
 }
+
 
 function progressFor(s) {
-  return Math.min(100, Math.round((s.completed / s.duration) * 100));
+
+  return Math.min(
+    100,
+    Math.round(
+      (s.completed / s.duration) * 100
+    )
+  );
 }
+
+
+// =========================================
+// SCREEN MANAGEMENT
+// =========================================
+
+function showScreen(screenId) {
+
+  // Hide every application screen
+  document.querySelectorAll(".screen").forEach(screen => {
+
+    screen.classList.remove("active");
+
+  });
+
+
+  // Show requested screen
+  const target = document.getElementById(screenId);
+
+  if (target) {
+
+    target.classList.add("active");
+
+  }
+
+
+  // Update bottom navigation
+  document.querySelectorAll(".nav-btn").forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.screen === screenId
+    );
+
+  });
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+// =========================================
+// HOME
+// =========================================
 
 function renderHome() {
+
   $("energyValue").textContent = energy;
+
   const list = $("todayList");
+
   list.innerHTML = "";
-  sankalpas.slice(0, 5).forEach(s => {
-    const card = document.createElement("button");
-    card.className = "sankalpa-card";
-    card.innerHTML = `
-      <div class="card-row">
-        <div class="card-icon">${s.icon}</div>
-        <div class="card-title">
-          <strong>${escapeHtml(s.title)}</strong>
-          <span>${s.completed} / ${s.duration} ${s.frequency === "weekly" ? "weeks" : "days"}</span>
+
+
+  sankalpas
+    .slice(0, 5)
+    .forEach(s => {
+
+      const card =
+        document.createElement("button");
+
+      card.className = "sankalpa-card";
+
+
+      card.innerHTML = `
+
+        <div class="card-row">
+
+          <div class="card-icon">
+            ${s.icon}
+          </div>
+
+          <div class="card-title">
+
+            <strong>
+              ${escapeHtml(s.title)}
+            </strong>
+
+            <span>
+              ${s.completed} / ${s.duration}
+              ${s.frequency === "weekly"
+                ? "weeks"
+                : "days"}
+            </span>
+
+          </div>
+
+          <div class="check">
+
+            ${
+              s.completed >= s.duration
+                ? "✓"
+                : "›"
+            }
+
+          </div>
+
         </div>
-        <div class="check">${s.completed >= s.duration ? "✓" : "›"}</div>
-      </div>
-      <div class="progress"><div style="width:${progressFor(s)}%"></div></div>
-    `;
-    card.addEventListener("click", () => openDetail(s.id));
-    list.appendChild(card);
-  });
+
+
+        <div class="progress">
+
+          <div
+            style="width:${progressFor(s)}%"
+          ></div>
+
+        </div>
+
+      `;
+
+
+      card.addEventListener(
+        "click",
+        () => openDetail(s.id)
+      );
+
+
+      list.appendChild(card);
+
+    });
 }
+
+
+// =========================================
+// JOURNEY
+// =========================================
 
 function renderJourney() {
+
   const list = $("journeyList");
+
   list.innerHTML = "";
+
+
   sankalpas.forEach(s => {
-    const card = document.createElement("div");
-    card.className = "sankalpa-card";
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "sankalpa-card";
+
+
     card.innerHTML = `
+
       <div class="card-row">
-        <div class="card-icon">${s.icon}</div>
-        <div class="card-title">
-          <strong>${escapeHtml(s.title)}</strong>
-          <span>${s.completed >= s.duration ? "Completed" : `${s.completed} / ${s.duration}`}</span>
+
+        <div class="card-icon">
+          ${s.icon}
         </div>
-        <div class="check">${s.completed >= s.duration ? "✓" : "•"}</div>
+
+        <div class="card-title">
+
+          <strong>
+            ${escapeHtml(s.title)}
+          </strong>
+
+          <span>
+
+            ${
+              s.completed >= s.duration
+                ? "Completed"
+                : `${s.completed} / ${s.duration}`
+            }
+
+          </span>
+
+        </div>
+
+        <div class="check">
+
+          ${
+            s.completed >= s.duration
+              ? "✓"
+              : "•"
+          }
+
+        </div>
+
       </div>
-      <div class="progress"><div style="width:${progressFor(s)}%"></div></div>
+
+
+      <div class="progress">
+
+        <div
+          style="width:${progressFor(s)}%"
+        ></div>
+
+      </div>
+
     `;
+
+
     list.appendChild(card);
+
   });
 }
 
+
+// =========================================
+// SANKALPA DETAIL
+// =========================================
+
 function openDetail(id) {
-  const s = sankalpas.find(x => x.id === id);
+
+  const s =
+    sankalpas.find(
+      item => item.id === id
+    );
+
+
   if (!s) return;
 
-  const days = Array.from({length: s.duration}, (_, i) =>
-    `<span class="diya ${i < s.completed ? "lit" : ""}">${i < s.completed ? "🪔" : "○"}</span>`
-  ).join("");
+
+  const days =
+    Array.from(
+      { length: s.duration },
+      (_, i) => `
+
+        <span
+          class="diya ${
+            i < s.completed
+              ? "lit"
+              : ""
+          }"
+        >
+          ${
+            i < s.completed
+              ? "🪔"
+              : "○"
+          }
+        </span>
+
+      `
+    ).join("");
+
 
   $("detailContent").innerHTML = `
+
     <div class="detail-hero">
-      <div class="detail-icon">${s.icon}</div>
-      <h1>${escapeHtml(s.title)}</h1>
-      <p>${escapeHtml(s.why || "A meaningful commitment to your spiritual journey.")}</p>
-      <p><strong>${s.completed} / ${s.duration}</strong> ${s.frequency === "weekly" ? "weeks" : "days"} · ${progressFor(s)}%</p>
+
+      <div class="detail-icon">
+        ${s.icon}
+      </div>
+
+      <h1>
+        ${escapeHtml(s.title)}
+      </h1>
+
+      <p>
+        ${escapeHtml(
+          s.why ||
+          "A meaningful commitment to your spiritual journey."
+        )}
+      </p>
+
+      <p>
+
+        <strong>
+          ${s.completed} / ${s.duration}
+        </strong>
+
+        ${
+          s.frequency === "weekly"
+            ? "weeks"
+            : "days"
+        }
+
+        · ${progressFor(s)}%
+
+      </p>
+
     </div>
 
-    <div class="diyas">${days}</div>
+
+    <div class="diyas">
+
+      ${days}
+
+    </div>
+
 
     <div class="practice-box">
-      <strong>Today's Practice</strong>
-      <p>${escapeHtml(s.title)}</p>
-      <button class="primary-btn" id="completePractice">
-        ${s.completed >= s.duration ? "COMPLETED" : "MARK AS DONE ✓"}
+
+      <strong>
+        Today's Practice
+      </strong>
+
+      <p>
+        ${escapeHtml(s.title)}
+      </p>
+
+
+      <button
+        class="primary-btn"
+        id="completePractice"
+      >
+
+        ${
+          s.completed >= s.duration
+            ? "COMPLETED"
+            : "MARK AS DONE ✓"
+        }
+
       </button>
+
     </div>
+
   `;
 
-  $("completePractice").addEventListener("click", () => completePractice(s.id));
+
+  $("completePractice")
+    .addEventListener(
+      "click",
+      () => completePractice(s.id)
+    );
+
+
   showScreen("detailScreen");
 }
 
+
+// =========================================
+// COMPLETE PRACTICE
+// =========================================
+
 function completePractice(id) {
-  const s = sankalpas.find(x => x.id === id);
-  if (!s || s.completed >= s.duration) return;
+
+  const s =
+    sankalpas.find(
+      item => item.id === id
+    );
+
+
+  if (
+    !s ||
+    s.completed >= s.duration
+  ) {
+    return;
+  }
+
 
   s.completed += 1;
-  energy = Math.min(100, energy + 3);
+
+
+  energy =
+    Math.min(
+      100,
+      energy + 3
+    );
+
+
   save();
+
   renderHome();
+
   renderJourney();
 
-  if (s.completed >= s.duration) {
+
+  if (
+    s.completed >= s.duration
+  ) {
+
     showCelebration(s);
+
   } else {
+
     openDetail(s.id);
+
   }
 }
 
+
+// =========================================
+// CELEBRATION
+// =========================================
+
 function showCelebration(s) {
-  $("celebrationTitle").textContent = `${s.title} — ${s.duration} ${s.frequency === "weekly" ? "weeks" : "days"} completed`;
-  $("celebration").classList.remove("hidden");
+
+  $("celebrationTitle").textContent =
+    `${s.title} — ${
+      s.duration
+    } ${
+      s.frequency === "weekly"
+        ? "weeks"
+        : "days"
+    } completed`;
+
+
+  $("celebration")
+    .classList.remove("hidden");
 }
 
-function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
-  }[c]));
+
+function closeCelebration() {
+
+  $("celebration")
+    .classList.add("hidden");
+
+  showScreen("journeyScreen");
 }
 
-$("createBtn").addEventListener("click", () => showScreen("createScreen"));
-$("viewAllBtn").addEventListener("click", () => showScreen("journeyScreen"));
 
-document.querySelectorAll("[data-back]").forEach(btn => {
-  btn.addEventListener("click", () => showScreen("homeScreen"));
-});
+// =========================================
+// CREATE SANKALPA
+// =========================================
 
-document.querySelectorAll(".nav-btn").forEach(btn => {
-  btn.addEventListener("click", () => showScreen(btn.dataset.screen));
-});
+$("sankalpaForm")
+  .addEventListener(
+    "submit",
+    event => {
 
-$("sankalpaForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const title = $("titleInput").value.trim();
-  const why = $("whyInput").value.trim();
-  const frequency = $("frequencyInput").value;
-  const duration = Number($("durationInput").value);
+      event.preventDefault();
 
-  sankalpas.unshift({
-    id: crypto.randomUUID(),
-    title,
-    why,
-    frequency,
-    duration,
-    completed: 0,
-    icon: "🪔"
+
+      const title =
+        $("titleInput")
+          .value
+          .trim();
+
+
+      const why =
+        $("whyInput")
+          .value
+          .trim();
+
+
+      const frequency =
+        $("frequencyInput")
+          .value;
+
+
+      const duration =
+        Number(
+          $("durationInput")
+            .value
+        );
+
+
+      sankalpas.unshift({
+
+        id: crypto.randomUUID(),
+
+        title,
+
+        why,
+
+        frequency,
+
+        duration,
+
+        completed: 0,
+
+        icon: "🪔"
+
+      });
+
+
+      save();
+
+      renderHome();
+
+      renderJourney();
+
+
+      $("sankalpaForm").reset();
+
+
+      showScreen(
+        "homeScreen"
+      );
+
+    }
+  );
+
+
+// =========================================
+// NAVIGATION
+// =========================================
+
+document
+  .querySelectorAll(".nav-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showScreen(
+          button.dataset.screen
+        );
+
+      }
+    );
+
   });
 
-  save();
-  renderHome();
-  renderJourney();
-  $("sankalpaForm").reset();
-  showScreen("homeScreen");
-});
 
-$("closeCelebration").addEventListener("click", () => {
-  $("celebration").classList.add("hidden");
-  showScreen("journeyScreen");
-});
+document
+  .querySelectorAll("[data-back]")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showScreen(
+          "homeScreen"
+        );
+
+      }
+    );
+
+  });
+
+
+$("createBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      showScreen(
+        "createScreen"
+      );
+
+    }
+  );
+
+
+$("viewAllBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      showScreen(
+        "journeyScreen"
+      );
+
+    }
+  );
+
+
+$("closeCelebration")
+  .addEventListener(
+    "click",
+    closeCelebration
+  );
+
+
+// =========================================
+// TEMPLE ENTRANCE
+// =========================================
+
+const enterTempleBtn =
+  $("enterTempleBtn");
+
+const templeEntrance =
+  $("templeEntrance");
+
+
+enterTempleBtn
+  .addEventListener(
+    "click",
+    () => {
+
+      templeEntrance
+        .classList
+        .add("exit");
+
+
+      setTimeout(
+        () => {
+
+          templeEntrance
+            .classList
+            .add("hidden");
+
+
+          showScreen(
+            "homeScreen"
+          );
+
+        },
+        1000
+      );
+
+    }
+  );
+
+
+// =========================================
+// INITIALIZE
+// =========================================
 
 renderHome();
+
 renderJourney();
 
+
+// Start on Home internally,
+// but keep entrance visible.
+document
+  .querySelectorAll(".screen")
+  .forEach(screen => {
+
+    screen.classList.remove(
+      "active"
+    );
+
+  });
+
+
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator
+        .serviceWorker
+        .register("sw.js");
+
+    }
+  );
+
 }

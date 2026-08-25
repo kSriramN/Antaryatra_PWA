@@ -1,117 +1,467 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1b1008">
-  <meta name="description" content="A temple-inspired Hindu personal growth and Sankalpa PWA.">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#120a05"
+  >
+
+  <meta
+    name="description"
+    content="Antar Yatra — a personal Hindu spiritual growth journey."
+  >
+
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
-  <title>Antar Yatra — Personal Growth</title>
+
+  <title>Antar Yatra</title>
 </head>
+
 <body>
-  <div id="app">
-    <header class="topbar">
-      <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
-      <div class="greeting">
-        <div class="sanskrit">शुभ प्रभात</div>
-        <div class="subtitle">May your day be blessed</div>
+
+  <!-- =========================================
+       TEMPLE ENTRANCE
+       ========================================= -->
+
+  <section id="templeEntrance" class="temple-entrance">
+
+    <div class="entrance-background"></div>
+
+    <div class="temple-arch">
+
+      <div class="arch-inner">
+
+        <div class="om-symbol">
+          ॐ
+        </div>
+
+        <div class="entrance-diya">
+          🪔
+        </div>
+
       </div>
-      <button class="icon-btn" aria-label="Notifications">♧</button>
+
+    </div>
+
+    <div class="entrance-content">
+
+      <div class="brand-small">
+        ANTAR
+      </div>
+
+      <h1>
+        YATRA
+      </h1>
+
+      <div class="brand-line"></div>
+
+      <p class="sanskrit-line">
+        आत्मनो मोक्षार्थं जगद्धिताय च
+      </p>
+
+      <p class="entrance-subtitle">
+        Your inner journey begins here.
+      </p>
+
+      <button
+        id="enterTempleBtn"
+        class="enter-temple-btn"
+      >
+        <span class="btn-diya">🪔</span>
+        ENTER THE TEMPLE
+      </button>
+
+    </div>
+
+    <div class="entrance-footer">
+      <span>ॐ</span>
+      <span>•</span>
+      <span>शुभ यात्रा</span>
+    </div>
+
+  </section>
+
+
+  <!-- =========================================
+       HOME TEMPLE
+       ========================================= -->
+
+ <section
+  id="homeScreen"
+  class="screen home-screen"
+>
+
+    <header class="topbar">
+
+      <button
+        class="icon-btn"
+        id="menuBtn"
+        aria-label="Open menu"
+      >
+        ☰
+      </button>
+
+      <div class="greeting">
+
+        <div class="sanskrit">
+          शुभ प्रभात
+        </div>
+
+        <div class="subtitle">
+          May your day be blessed
+        </div>
+
+      </div>
+
+      <button
+        class="icon-btn"
+        aria-label="Notifications"
+      >
+        ♧
+      </button>
+
     </header>
 
+
     <main>
-      <section id="homeScreen" class="screen active">
-        <div class="energy-card">
-          <div class="mandala">ॐ</div>
-          <div class="eyebrow">INNER ENERGY</div>
-          <div class="energy-value" id="energyValue">72</div>
-          <div class="energy-symbol">⚡</div>
+
+      <!-- ENERGY -->
+
+      <section class="energy-card">
+
+        <div class="mandala">
+          ॐ
         </div>
 
-        <section class="section">
-          <div class="section-title-row">
-            <h2>Today's Sankalpas</h2>
-            <button class="text-btn" id="viewAllBtn">View all</button>
-          </div>
-          <div id="todayList" class="sankalpa-list"></div>
-        </section>
-
-        <button class="primary-btn" id="createBtn">＋ CREATE SANKALPA</button>
-      </section>
-
-      <section id="createScreen" class="screen">
-        <button class="back-btn" data-back>← Back</button>
-        <div class="temple-heading">
-          <div class="small-diya">🪔</div>
-          <h1>New Sankalpa</h1>
-          <p>Make a meaningful resolve.</p>
+        <div class="eyebrow">
+          INNER ENERGY
         </div>
 
-        <form id="sankalpaForm" class="form-card">
-          <label>What is your Sankalpa?
-            <textarea id="titleInput" required placeholder="I will read the Bhagavad Gita..."></textarea>
-          </label>
-
-          <label>Why is this important to you?
-            <textarea id="whyInput" placeholder="To understand Krishna's teachings..."></textarea>
-          </label>
-
-          <label>How often?
-            <select id="frequencyInput">
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-            </select>
-          </label>
-
-          <label>For how long?
-            <select id="durationInput">
-              <option value="7">7 days</option>
-              <option value="21">21 days</option>
-              <option value="30" selected>30 days</option>
-              <option value="40">40 days</option>
-              <option value="90">90 days</option>
-            </select>
-          </label>
-
-          <button class="primary-btn" type="submit">MAKE THIS SANKALPA</button>
-        </form>
-      </section>
-
-      <section id="detailScreen" class="screen">
-        <button class="back-btn" data-back>← Back</button>
-        <div id="detailContent"></div>
-      </section>
-
-      <section id="journeyScreen" class="screen">
-        <div class="temple-heading">
-          <h1>My Journey</h1>
-          <p>Promises made. Promises kept.</p>
+        <div
+          class="energy-value"
+          id="energyValue"
+        >
+          72
         </div>
-        <div id="journeyList" class="sankalpa-list"></div>
+
+        <div class="energy-symbol">
+          ⚡
+        </div>
+
       </section>
+
+
+      <!-- TODAY'S SANKALPAS -->
+
+      <section class="section">
+
+        <div class="section-title-row">
+
+          <h2>
+            Today's Sankalpas
+          </h2>
+
+          <button
+            class="text-btn"
+            id="viewAllBtn"
+          >
+            View all
+          </button>
+
+        </div>
+
+        <div
+          id="todayList"
+          class="sankalpa-list"
+        ></div>
+
+      </section>
+
+
+      <!-- CREATE -->
+
+      <button
+        class="primary-btn"
+        id="createBtn"
+      >
+        ＋ CREATE SANKALPA
+      </button>
+
     </main>
 
+  </section>
+
+      <!-- BOTTOM NAV -->
+
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-screen="homeScreen">🛕<span>Temple</span></button>
-      <button class="nav-btn" data-screen="createScreen">🪔<span>Sankalpa</span></button>
-      <button class="nav-btn" data-screen="journeyScreen">🌿<span>Journey</span></button>
+
+      <button
+        class="nav-btn active"
+        data-screen="homeScreen"
+      >
+        🛕
+        <span>Temple</span>
+      </button>
+
+      <button
+        class="nav-btn"
+        data-screen="createScreen"
+      >
+        🪔
+        <span>Sankalpa</span>
+      </button>
+
+      <button
+        class="nav-btn"
+        data-screen="journeyScreen"
+      >
+        🌿
+        <span>Journey</span>
+      </button>
+
     </nav>
+
+
+  <!-- =========================================
+       CREATE SANKALPA
+       ========================================= -->
+
+  <section
+    id="createScreen"
+    class="screen"
+  >
+
+    <button
+      class="back-btn"
+      data-back
+    >
+      ← Back
+    </button>
+
+    <div class="temple-heading">
+
+      <div class="small-diya">
+        🪔
+      </div>
+
+      <h1>
+        New Sankalpa
+      </h1>
+
+      <p>
+        Make a meaningful resolve.
+      </p>
+
+    </div>
+
+
+    <form
+      id="sankalpaForm"
+      class="form-card"
+    >
+
+      <label>
+        What is your Sankalpa?
+
+        <textarea
+          id="titleInput"
+          required
+          placeholder="I will read the Bhagavad Gita..."
+        ></textarea>
+
+      </label>
+
+
+      <label>
+        Why is this important to you?
+
+        <textarea
+          id="whyInput"
+          placeholder="To understand Krishna's teachings..."
+        ></textarea>
+
+      </label>
+
+
+      <label>
+        How often?
+
+        <select id="frequencyInput">
+
+          <option value="daily">
+            Daily
+          </option>
+
+          <option value="weekly">
+            Weekly
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label>
+        For how long?
+
+        <select id="durationInput">
+
+          <option value="7">
+            7 days
+          </option>
+
+          <option value="21">
+            21 days
+          </option>
+
+          <option
+            value="30"
+            selected
+          >
+            30 days
+          </option>
+
+          <option value="40">
+            40 days
+          </option>
+
+          <option value="90">
+            90 days
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <button
+        class="primary-btn"
+        type="submit"
+      >
+        MAKE THIS SANKALPA
+      </button>
+
+    </form>
+
+  </section>
+
+
+  <!-- =========================================
+       SANkALPA DETAIL
+       ========================================= -->
+
+  <section
+    id="detailScreen"
+    class="screen"
+  >
+
+    <button
+      class="back-btn"
+      data-back
+    >
+      ← Back
+    </button>
+
+    <div id="detailContent"></div>
+
+  </section>
+
+
+  <!-- =========================================
+       JOURNEY
+       ========================================= -->
+
+  <section
+  
+    id="journeyScreen"
+    class="screen"
+  >
+  <button
+  class="back-btn"
+  data-back
+>
+  ← Back
+</button>
+
+    <div class="temple-heading">
+
+      <h1>
+        My Journey
+      </h1>
+
+      <p>
+        Promises made. Promises kept.
+      </p>
+
+    </div>
+
+    <div
+      id="journeyList"
+      class="sankalpa-list"
+    ></div>
+
+  </section>
+
+
+  <!-- =========================================
+       GRAND CELEBRATION
+       ========================================= -->
+
+  <div
+    id="celebration"
+    class="celebration hidden"
+  >
+
+    <div class="celebration-glow"></div>
+
+    <div class="celebration-content">
+
+      <div class="celebration-diya">
+        🪔
+      </div>
+
+      <div class="sanskrit">
+        संकल्पः पूर्णः
+      </div>
+
+      <h1>
+        Sankalpa Completed!
+      </h1>
+
+      <p id="celebrationTitle"></p>
+
+      <div class="celebration-message">
+        You kept your resolve.
+      </div>
+
+      <div class="celebration-message">
+        What began as a Sankalpa became a practice.
+      </div>
+
+      <button
+        class="primary-btn"
+        id="closeCelebration"
+      >
+        CONTINUE
+      </button>
+
+    </div>
+
   </div>
 
-  <div id="celebration" class="celebration hidden">
-    <div class="celebration-glow"></div>
-    <div class="celebration-content">
-      <div class="celebration-diya">🪔</div>
-      <div class="sanskrit">संकल्पः पूर्णः</div>
-      <h1>Sankalpa Completed!</h1>
-      <p id="celebrationTitle"></p>
-      <div class="celebration-message">You kept your resolve.</div>
-      <div class="celebration-message">What began as a Sankalpa became a practice.</div>
-      <button class="primary-btn" id="closeCelebration">CONTINUE</button>
-    </div>
-  </div>
+
+  <!-- =========================================
+       JAVASCRIPT
+       ========================================= -->
 
   <script src="app.js"></script>
+
 </body>
 </html>
