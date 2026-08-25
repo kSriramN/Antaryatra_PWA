@@ -20,6 +20,7 @@
 
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="temple.css">
 
   <title>Antar Yatra</title>
 </head>
@@ -27,100 +28,51 @@
 <body>
 
   <!-- =========================================
-       TEMPLE ENTRANCE
+       AMBIENT SANCTUM BACKDROP
        ========================================= -->
 
-  <section id="templeEntrance" class="temple-entrance">
+  <div class="ty-bg" aria-hidden="true">
+    <div class="ty-mandala"></div>
+    <div class="ty-wall l"></div>
+    <div class="ty-wall r"></div>
+    <div class="ty-vignette"></div>
+    <div class="ty-embers" id="tyEmbers"></div>
+  </div>
 
-    <div class="entrance-background"></div>
 
-    <div class="temple-arch">
+  <!-- =========================================
+       TEMPLE GATE  (entrance)
+       ========================================= -->
 
-      <div class="arch-inner">
+  <section id="templeEntrance" class="ty-gate">
 
-        <div class="om-symbol">
-          ॐ
+    <div class="ty-gate-inner">
+
+      <div class="ty-doorway">
+        <div class="ty-doorway-in">
+          <div class="ty-doorway-om">ॐ</div>
+          <div class="ty-doorway-diya">🪔</div>
         </div>
-
-        <div class="entrance-diya">
-          🪔
-        </div>
-
       </div>
 
-    </div>
+      <div class="ty-brand-small">ANTAR</div>
+      <h1 class="ty-brand">YATRA</h1>
+      <div class="ty-brand-rule"></div>
 
-    <div class="entrance-content">
-
-      <div class="brand-small">
-        ANTAR
-      </div>
-
-      <h1>
-        YATRA
-      </h1>
-
-      <div class="brand-line"></div>
-
-      <p class="sanskrit-line">
+      <p class="ty-gate-sanskrit">
         आत्मनो मोक्षार्थं जगद्धिताय च
       </p>
 
-      <p class="entrance-subtitle">
-        Your inner journey begins here.
-      </p>
+      <p class="ty-gate-sub">Your inner journey begins here.</p>
 
-      <button
-        id="enterTempleBtn"
-        class="enter-temple-btn"
-      >
-        <span class="btn-diya">🪔</span>
-        ENTER THE TEMPLE
+      <button id="enterTempleBtn" class="ty-gate-btn">
+        <span>🪔</span> ENTER THE TEMPLE
       </button>
 
     </div>
 
-    <div class="entrance-footer">
-      <span>ॐ</span>
-      <span>•</span>
-      <span>शुभ यात्रा</span>
-    </div>
-
-  </section>
-
-
-  <!-- =========================================
-       LORD RAM DARSHAN TRANSITION
-       ========================================= -->
-
-  <section
-    id="ramReveal"
-    class="ram-reveal"
-    aria-hidden="true"
-  >
-
-    <div class="ram-aura"></div>
-
-    <div class="ram-image-wrap">
-
-      <img
-        src="lord-ram.jpg"
-        class="ram-image"
-        alt="Lord Ram"
-      >
-
-    </div>
-
-    <div class="ram-reveal-text">
-
-      <div class="ram-om">
-        ॐ
-      </div>
-
-      <div class="ram-sanskrit">
-        श्री राम
-      </div>
-
+    <div class="ty-gate-foot">
+      <span>ॐ</span><span>•</span><span>शुभ यात्रा</span>
     </div>
 
   </section>
@@ -130,115 +82,121 @@
        HOME TEMPLE
        ========================================= -->
 
-  <section
-    id="homeScreen"
-    class="screen home-screen"
-  >
+  <section id="homeScreen" class="screen home-screen ty-home">
 
-    <header class="topbar">
+    <header class="ty-topbar">
 
-      <button
-        class="icon-btn"
-        id="menuBtn"
-        aria-label="Open menu"
-      >
-        ☰
-      </button>
+      <button class="ty-ib" id="menuBtn" aria-label="Open menu">☰</button>
 
-      <div class="greeting">
-
-        <div class="sanskrit">
-          शुभ प्रभात
-        </div>
-
-        <div class="subtitle">
-          May your day be blessed
-        </div>
-
+      <div class="ty-greet">
+        <div class="dv" id="tyGreeting">शुभ प्रभात</div>
+        <div class="sb" id="tyGreetingSub">May your day be blessed</div>
       </div>
 
-      <button
-        class="icon-btn"
-        aria-label="Notifications"
-      >
-        ♧
+      <button class="ty-ib ty-bell" aria-label="Notifications">
+        🔔<i></i>
       </button>
 
     </header>
 
 
-    <main>
+    <!-- GARBHAGRIHA / DARSHAN -->
 
-      <!-- ENERGY -->
+    <div class="ty-sanctum">
 
-      <section class="energy-card">
+      <div class="ty-halo" aria-hidden="true"></div>
 
-        <div class="mandala">
-          ॐ
-        </div>
+      <svg class="ty-toran" viewBox="0 0 352 74" fill="none" aria-hidden="true">
+        <path d="M10 10 C90 66, 262 66, 342 10"
+              stroke="rgba(244,195,106,.45)" stroke-width="1.4"/>
+        <g id="tyToran"></g>
+      </svg>
 
-        <div class="eyebrow">
-          INNER ENERGY
-        </div>
+      <div class="ty-finial" aria-hidden="true">ॐ</div>
 
-        <div
-          class="energy-value"
-          id="energyValue"
-        >
-          72
-        </div>
+      <div class="ty-frame">
+        <div class="ty-frame-in" id="tyShrine">
 
-        <div class="energy-symbol">
-          ⚡
-        </div>
+          <img class="ty-murti" src="lord-ram.jpg"
+               alt="Darshan of Shri Ram Lalla, Ayodhya">
 
-      </section>
+          <div class="ty-aarti" aria-hidden="true"></div>
+          <div class="ty-shade" aria-hidden="true"></div>
 
+          <div class="ty-curtain l" aria-hidden="true"></div>
+          <div class="ty-curtain r" aria-hidden="true"></div>
 
-      <!-- TODAY'S SANKALPAS -->
-
-      <section class="section">
-
-        <div class="section-title-row">
-
-          <h2>
-            Today's Sankalpas
-          </h2>
-
-          <button
-            class="text-btn"
-            id="viewAllBtn"
-          >
-            View all
-          </button>
+          <div class="ty-bloom" aria-hidden="true"></div>
 
         </div>
+      </div>
 
-        <div
-          id="todayList"
-          class="sankalpa-list"
-        ></div>
+      <div class="ty-lamps" aria-hidden="true">
+        <span>🪔</span><span>🪔</span>
+      </div>
 
-      </section>
+      <div class="ty-plinth" aria-hidden="true"></div>
+
+      <div class="ty-cap">
+        <div class="c1">श्री रामलला &nbsp;•&nbsp; अयोध्या</div>
+        <div class="c2">TODAY’S DARSHAN</div>
+      </div>
+
+    </div>
 
 
-      <!-- CREATE -->
+    <!-- INNER ENERGY -->
 
-      <button
-        class="primary-btn"
-        id="createBtn"
-      >
-        ＋ CREATE SANKALPA
+    <div class="ty-energy">
+
+      <div class="ty-seal">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" fill="none"
+                  stroke="rgba(244,195,106,.16)" stroke-width="3"/>
+          <circle id="tyEnergyArc" cx="32" cy="32" r="29" fill="none"
+                  stroke="#E8A317" stroke-width="3.4" stroke-linecap="round"
+                  pathLength="100" stroke-dasharray="72 100"
+                  transform="rotate(-90 32 32)"
+                  style="filter:drop-shadow(0 0 5px rgba(255,170,60,.9))"/>
+        </svg>
+        <b>ॐ</b>
+      </div>
+
+      <div class="txt">
+        <div class="lb">INNER ENERGY</div>
+        <div class="row">
+          <span class="vv" id="energyValue">72</span>
+          <span class="dd" id="tyEnergyDelta"></span>
+        </div>
+        <div class="ty-track"><i id="tyEnergyBar" style="width:72%"></i></div>
+      </div>
+
+    </div>
+
+
+    <!-- TODAY’S SANKALPAS -->
+
+    <div class="ty-sheet">
+
+      <div class="ty-sh">
+        <h2><i>✽</i>Today’s Sankalpas</h2>
+        <button id="viewAllBtn">View all ›</button>
+      </div>
+
+      <div id="todayList"></div>
+
+      <button class="ty-cta" id="createBtn">
+        ✦&nbsp; MAKE A SANKALPA &nbsp;✦
       </button>
 
-    </main>
+    </div>
 
   </section>
 
 
   <!-- BOTTOM NAV -->
 
-  <nav class="bottom-nav">
+  <nav class="bottom-nav ty-nav">
 
     <button
       class="nav-btn active"

@@ -1,11 +1,13 @@
-const CACHE = "antar-yatra-v1";
+const CACHE = "antar-yatra-v2";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
+  "./temple.css",
   "./app.js",
   "./manifest.webmanifest",
-  "./icon.svg"
+  "./icon.svg",
+  "./lord-ram.jpg"
 ];
 
 self.addEventListener("install", event => {

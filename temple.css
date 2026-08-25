@@ -1,0 +1,1035 @@
+/* =========================================================
+   ANTAR YATRA — TEMPLE V2
+   Garbhagriha darshan gate + home sanctum.
+
+   Everything here is namespaced with .ty-  so it cannot
+   collide with the original styles.css rules.
+   ========================================================= */
+
+:root {
+  --ty-gold:        #F4C36A;
+  --ty-gold-2:      #E8A317;
+  --ty-gold-deep:   #A9691A;
+  --ty-cream:       #FFF7E6;
+  --ty-muted:       #C2A173;
+  --ty-ember:       #FF6B1A;
+  --ty-ink:         #070302;
+  --ty-line:        rgba(244, 195, 106, 0.20);
+
+  --ty-serif:  "Lora", Georgia, "Times New Roman", serif;
+  --ty-deva:   "Noto Serif Devanagari", "Nirmala UI",
+               "Mangal", "Lohit Devanagari", serif;
+}
+
+
+/* =========================================================
+   1. AMBIENT SANCTUM BACKDROP
+   Pure CSS — no image assets, so it costs nothing to load.
+   ========================================================= */
+
+.ty-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  background:
+    radial-gradient(ellipse 62% 40% at 50% 26%,
+      rgba(255, 146, 32, 0.22), transparent 68%),
+    radial-gradient(ellipse 100% 50% at 50% 100%,
+      rgba(120, 58, 14, 0.36), transparent 72%),
+    linear-gradient(180deg, #0B0503 0%, #150A04 42%, #0A0402 100%);
+}
+
+/* carved stone side walls */
+.ty-wall {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 86px;
+}
+
+.ty-wall.l {
+  left: 0;
+  background: linear-gradient(90deg,
+    #1C0F06 0%, rgba(58, 34, 14, 0.75) 62%, transparent);
+}
+
+.ty-wall.r {
+  right: 0;
+  background: linear-gradient(270deg,
+    #1C0F06 0%, rgba(58, 34, 14, 0.75) 62%, transparent);
+}
+
+.ty-wall::before {
+  content: "";
+  position: absolute;
+  inset: 0 18px 0 10px;
+  opacity: 0.55;
+  background: repeating-linear-gradient(180deg,
+    rgba(255, 220, 160, 0.07) 0 1px,
+    transparent 1px 62px,
+    rgba(0, 0, 0, 0.45) 62px 64px,
+    transparent 64px 66px);
+}
+
+.ty-wall::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 16px;
+  top: 0;
+  height: 112px;
+  background: linear-gradient(180deg, rgba(244, 195, 106, 0.16), transparent);
+  border-bottom: 1px solid rgba(244, 195, 106, 0.22);
+}
+
+/* mandala light-rays behind the shrine */
+.ty-mandala {
+  position: absolute;
+  left: 50%;
+  top: 300px;
+  translate: -50% -50%;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  opacity: 0.10;
+  filter: blur(1.4px);
+
+  background:
+    repeating-conic-gradient(from 0deg,
+      rgba(244, 195, 106, 0.5) 0deg 1.6deg, transparent 1.6deg 15deg),
+    radial-gradient(circle,
+      transparent 62%, rgba(244, 195, 106, 0.35) 63%, transparent 65%);
+
+  -webkit-mask: radial-gradient(circle,
+    transparent 40%, #000 50%, #000 70%, transparent 80%);
+          mask: radial-gradient(circle,
+    transparent 40%, #000 50%, #000 70%, transparent 80%);
+
+  animation: ty-spin 220s linear infinite;
+}
+
+@keyframes ty-spin { to { rotate: 360deg; } }
+
+.ty-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 62% at 50% 32%,
+      transparent 34%, rgba(5, 2, 1, 0.72) 100%),
+    linear-gradient(180deg, rgba(6, 3, 1, 0.5), transparent 18%,
+      transparent 58%, rgba(5, 2, 1, 0.92));
+}
+
+/* drifting embers */
+.ty-embers { position: absolute; inset: 0; }
+
+.ty-ember {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFCF82, rgba(255, 140, 30, 0));
+  filter: blur(0.3px);
+  animation: ty-float linear infinite;
+}
+
+@keyframes ty-float {
+  from { transform: translateY(0)     scale(var(--s, 1)); }
+  to   { transform: translateY(-140px) scale(var(--s, 1)); }
+}
+
+
+/* =========================================================
+   2. TEMPLE GATE  (entrance screen)
+   ========================================================= */
+
+.ty-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  font-family: var(--ty-serif);
+  color: var(--ty-cream);
+
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.ty-gate.ty-exit {
+  opacity: 0;
+  transform: scale(1.08);
+}
+
+.ty-gate.ty-hidden { display: none; }
+
+.ty-gate-inner {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 430px);
+  padding: 0 28px;
+}
+
+/* the doorway you are about to walk through */
+.ty-doorway {
+  position: relative;
+  width: 224px;
+  height: 268px;
+  margin: 0 auto 30px;
+  border-radius: 112px 112px 12px 12px;
+  padding: 6px;
+  background: linear-gradient(180deg, #C99341, #7A4A18 40%, #3A2109);
+  box-shadow:
+    0 0 0 1px rgba(255, 225, 160, 0.45),
+    0 0 60px rgba(255, 150, 40, 0.30),
+    0 22px 54px rgba(0, 0, 0, 0.65);
+}
+
+.ty-doorway-in {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 106px 106px 8px 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 70%,
+      rgba(255, 150, 40, 0.34), transparent 70%),
+    linear-gradient(180deg, #150A04, #060302);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+.ty-doorway-om {
+  font-family: var(--ty-deva);
+  font-size: 62px;
+  line-height: 1;
+  color: var(--ty-gold);
+  text-shadow: 0 0 34px rgba(255, 170, 60, 0.85);
+  animation: ty-breathe 5s ease-in-out infinite;
+}
+
+.ty-doorway-diya {
+  font-size: 28px;
+  filter: drop-shadow(0 0 18px rgba(255, 150, 40, 1));
+  animation: ty-flicker 3.2s ease-in-out infinite;
+}
+
+@keyframes ty-breathe {
+  0%, 100% { opacity: 0.82; transform: scale(1);     }
+  50%      { opacity: 1;    transform: scale(1.045); }
+}
+
+@keyframes ty-flicker {
+  0%, 100% { opacity: 1;    transform: scale(1)      rotate(-1deg); }
+  40%      { opacity: 0.86; transform: scale(0.97)   rotate(1.5deg); }
+  70%      { opacity: 1;    transform: scale(1.03)   rotate(-0.5deg); }
+}
+
+.ty-brand-small {
+  font-size: 11px;
+  letter-spacing: 8px;
+  color: var(--ty-gold-2);
+  opacity: 0.9;
+}
+
+.ty-brand {
+  font-size: 44px;
+  letter-spacing: 9px;
+  font-weight: 400;
+  margin-top: 2px;
+  color: var(--ty-cream);
+  text-shadow: 0 0 34px rgba(255, 180, 70, 0.45);
+}
+
+.ty-brand-rule {
+  width: 108px;
+  height: 1px;
+  margin: 16px auto;
+  background: linear-gradient(90deg, transparent, var(--ty-gold), transparent);
+}
+
+.ty-gate-sanskrit {
+  font-family: var(--ty-deva);
+  font-size: 16px;
+  color: var(--ty-gold);
+  line-height: 1.7;
+}
+
+.ty-gate-sub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ty-muted);
+}
+
+.ty-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  padding: 15px 30px;
+  border: 1px solid rgba(255, 230, 170, 0.55);
+  border-radius: 14px;
+  font-family: var(--ty-serif);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 3.2px;
+  color: #2A1607;
+  cursor: pointer;
+
+  background: linear-gradient(180deg, #FFD684, #E8A317 52%, #B9741A);
+  box-shadow:
+    0 10px 26px rgba(232, 163, 23, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ty-gate-btn:active { transform: scale(0.97); }
+
+.ty-gate-foot {
+  position: absolute;
+  bottom: 26px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--ty-deva);
+  font-size: 13px;
+  color: var(--ty-muted);
+  opacity: 0.8;
+}
+
+
+/* =========================================================
+   3. HOME — TOP BAR
+   ========================================================= */
+
+.screen.ty-home {
+  width: min(100%, 430px);
+  padding: 0 0 112px;
+}
+
+.ty-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 20px 0;
+}
+
+.ty-ib {
+  background: none;
+  border: 0;
+  color: var(--ty-gold);
+  font-size: 21px;
+  line-height: 1;
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.ty-greet { flex: 1; text-align: center; }
+
+.ty-greet .dv {
+  font-family: var(--ty-deva);
+  font-size: 23px;
+  color: var(--ty-gold);
+  text-shadow: 0 0 20px rgba(244, 180, 80, 0.5);
+}
+
+.ty-greet .dv::before { content: "❧ "; font-size: 12px; opacity: 0.5; }
+.ty-greet .dv::after  { content: " ❧"; font-size: 12px; opacity: 0.5; }
+
+.ty-greet .sb {
+  margin-top: 2px;
+  font-size: 11.5px;
+  letter-spacing: 0.6px;
+  color: var(--ty-muted);
+}
+
+.ty-bell { position: relative; }
+
+.ty-bell i {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ty-ember);
+  box-shadow: 0 0 8px var(--ty-ember);
+}
+
+
+/* =========================================================
+   4. HOME — GARBHAGRIHA / DARSHAN
+   ========================================================= */
+
+.ty-sanctum {
+  position: relative;
+  height: 404px;
+  margin-top: 8px;
+}
+
+.ty-halo {
+  position: absolute;
+  left: 50%;
+  top: 190px;
+  translate: -50% -50%;
+  width: 470px;
+  height: 470px;
+  border-radius: 50%;
+  filter: blur(6px);
+  background: radial-gradient(circle,
+    rgba(255, 178, 68, 0.30), rgba(255, 140, 30, 0.09) 44%, transparent 68%);
+  animation: ty-halo-breathe 6s ease-in-out infinite;
+}
+
+@keyframes ty-halo-breathe {
+  0%, 100% { opacity: 0.78; transform: translate(-50%, -50%) scale(1);    }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.06); }
+}
+
+/* mango-leaf toran strung across the shrine */
+.ty-toran {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  translate: -50%;
+  width: 352px;
+  height: 74px;
+}
+
+.ty-finial {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  translate: -50%;
+  z-index: 3;
+  font-family: var(--ty-deva);
+  font-size: 19px;
+  color: var(--ty-gold);
+  text-shadow: 0 0 18px rgba(255, 170, 60, 0.85);
+}
+
+/* the shrine frame */
+.ty-frame {
+  position: absolute;
+  left: 50%;
+  top: 44px;
+  translate: -50%;
+  width: 282px;
+  height: 300px;
+  padding: 7px;
+  border-radius: 141px 141px 14px 14px;
+
+  background: linear-gradient(180deg, #C99341, #7A4A18 40%, #3A2109);
+  box-shadow:
+    0 0 0 1px rgba(255, 225, 160, 0.45),
+    0 0 54px rgba(255, 150, 40, 0.32),
+    0 26px 60px rgba(0, 0, 0, 0.65);
+}
+
+.ty-frame-in {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 135px 135px 9px 9px;
+  overflow: hidden;
+  background: #0A0603;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 225, 160, 0.35),
+    inset 0 0 40px rgba(0, 0, 0, 0.7);
+}
+
+.ty-murti {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 23%;
+  filter: saturate(1.12) contrast(1.05);
+}
+
+/* breathing aarti light over the murti */
+.ty-aarti {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(ellipse 56% 38% at 50% 30%,
+    rgba(255, 200, 96, 0.34), transparent 66%);
+  animation: ty-aarti-breathe 5.5s ease-in-out infinite;
+}
+
+@keyframes ty-aarti-breathe {
+  0%, 100% { opacity: 0.65; transform: scale(1);     }
+  50%      { opacity: 1;    transform: scale(1.045); }
+}
+
+.ty-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0.28), transparent 22%,
+    transparent 62%, rgba(8, 4, 2, 0.72));
+}
+
+
+/* ---- the pardah (curtain) ------------------------------- */
+
+.ty-curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 51%;
+  z-index: 4;
+
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0, 0, 0, 0.30) 0 3px,
+      rgba(255, 255, 255, 0.05) 3px 7px,
+      transparent 7px 22px),
+    linear-gradient(90deg, #4D0D0C, #8C1B16 34%, #A8261C 52%, #6E140F 78%, #3E0A09);
+
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.55);
+  will-change: transform;
+}
+
+.ty-curtain::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16px;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--ty-gold) 0 3px, transparent 3px 8px),
+    linear-gradient(180deg, #C99341, #7A4A18);
+  opacity: 0.9;
+}
+
+.ty-curtain.l { left: 0;  border-right: 1px solid rgba(0, 0, 0, 0.5); }
+.ty-curtain.r { right: 0; border-left:  1px solid rgba(0, 0, 0, 0.5); }
+
+
+/* -----------------------------------------------------------
+   Drawing the pardah.
+
+   A curtain is pulled by hand, not switched off.  So this is a
+   keyframe animation rather than a transition: a small tug as
+   the rope takes the weight, then a long, slow draw that eases
+   to a stop.  The two halves are deliberately out of step —
+   nothing in a temple opens in perfect symmetry.
+
+   The cloth never leaves the frame.  It gathers into a fold at
+   the edge, the way it actually hangs.
+   ----------------------------------------------------------- */
+
+@keyframes ty-part-left {
+  /* the rope takes the weight */
+  0% {
+    transform: translateX(0) skewX(0deg);
+    animation-timing-function: ease-out;
+  }
+  /* then a steady, even pull — linear, so the speed never spikes */
+  6% {
+    transform: translateX(-1.6%) skewX(0.9deg);
+    animation-timing-function: linear;
+  }
+  /* and a soft settle as the cloth gathers at the edge */
+  90% {
+    transform: translateX(-81%) skewX(-0.4deg);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translateX(-89%) skewX(0deg);
+  }
+}
+
+@keyframes ty-part-right {
+  0% {
+    transform: translateX(0) skewX(0deg);
+    animation-timing-function: ease-out;
+  }
+  6% {
+    transform: translateX(1.6%) skewX(-0.9deg);
+    animation-timing-function: linear;
+  }
+  90% {
+    transform: translateX(81%) skewX(0.4deg);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translateX(89%) skewX(0deg);
+  }
+}
+
+.ty-shrine-open .ty-curtain.l {
+  animation: ty-part-left 5.2s forwards;
+}
+
+.ty-shrine-open .ty-curtain.r {
+  animation: ty-part-right 5.6s 0.3s forwards;
+}
+
+/* the folds drift as the cloth gathers */
+.ty-shrine-open .ty-curtain {
+  transition: background-position 5.4s linear;
+  background-position: 26px 0, 0 0;
+}
+
+/* darshan bloom — the light that meets you when the cloth clears */
+.ty-bloom {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(ellipse 62% 44% at 50% 32%,
+    rgba(255, 226, 160, 0.85), rgba(255, 170, 60, 0.25) 46%, transparent 72%);
+}
+
+.ty-shrine-open .ty-bloom {
+  animation: ty-bloom 3s 5.4s ease-out forwards;
+}
+
+@keyframes ty-bloom {
+  0%   { opacity: 0;    transform: scale(0.94); }
+  28%  { opacity: 0.72; transform: scale(1);    }
+  100% { opacity: 0;    transform: scale(1.06); }
+}
+
+/* no curtain at all once the darshan has been taken */
+.ty-shrine-still .ty-curtain,
+.ty-shrine-still .ty-bloom { display: none; }
+
+
+/* ---- lamps, plinth, caption ----------------------------- */
+
+.ty-lamps {
+  position: absolute;
+  left: 50%;
+  top: 316px;
+  translate: -50%;
+  width: 372px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.ty-lamps span {
+  font-size: 27px;
+  filter: drop-shadow(0 0 18px rgba(255, 150, 40, 1));
+  animation: ty-flicker 3.6s ease-in-out infinite;
+}
+
+.ty-lamps span:last-child { animation-delay: -1.4s; }
+
+.ty-plinth {
+  position: absolute;
+  left: 50%;
+  top: 344px;
+  translate: -50%;
+  width: 344px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #5A3715, #2A1809);
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 220, 150, 0.25);
+}
+
+.ty-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 372px;
+  text-align: center;
+}
+
+.ty-cap .c1 {
+  font-family: var(--ty-deva);
+  font-size: 17.5px;
+  color: var(--ty-gold-2);
+  text-shadow: 0 0 16px rgba(255, 150, 40, 0.5);
+}
+
+.ty-cap .c2 {
+  margin-top: 5px;
+  font-size: 9.5px;
+  letter-spacing: 3.8px;
+  color: var(--ty-muted);
+}
+
+
+/* =========================================================
+   5. HOME — INNER ENERGY
+   ========================================================= */
+
+.ty-energy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 20px 0;
+  padding: 12px 16px 13px;
+  border-radius: 18px;
+  border: 1px solid var(--ty-line);
+  background: linear-gradient(180deg,
+    rgba(59, 37, 17, 0.72), rgba(20, 11, 5, 0.72));
+  box-shadow: inset 0 1px 0 rgba(255, 220, 150, 0.10);
+}
+
+.ty-seal {
+  position: relative;
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid rgba(244, 195, 106, 0.55);
+
+  background:
+    repeating-conic-gradient(from 0deg,
+      rgba(0, 0, 0, 0.18) 0 2deg, rgba(255, 220, 160, 0.06) 2deg 4.5deg),
+    radial-gradient(circle at 36% 28%, #A8701F, #3A2109 80%);
+
+  box-shadow:
+    0 0 20px rgba(255, 150, 40, 0.32),
+    inset 0 0 14px rgba(0, 0, 0, 0.7);
+}
+
+.ty-seal svg { position: absolute; inset: -2px; overflow: visible; }
+
+.ty-seal b {
+  font-family: var(--ty-deva);
+  font-size: 22px;
+  font-weight: 400;
+  color: #FFE2A8;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7), 0 0 14px rgba(255, 190, 90, 0.7);
+}
+
+.ty-energy .txt { flex: 1; min-width: 0; }
+
+.ty-energy .lb {
+  font-size: 9.5px;
+  letter-spacing: 3.4px;
+  color: var(--ty-muted);
+}
+
+.ty-energy .row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.ty-energy .vv {
+  font-size: 29px;
+  line-height: 1;
+  color: var(--ty-gold);
+  text-shadow: 0 0 20px rgba(244, 180, 80, 0.55);
+}
+
+.ty-energy .dd { font-size: 11px; color: #8DDC9A; }
+
+.ty-track {
+  height: 5px;
+  margin-top: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 220, 160, 0.12);
+}
+
+.ty-track i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ty-gold-deep), var(--ty-gold-2), #FFE6AB);
+  box-shadow: 0 0 12px rgba(244, 180, 80, 0.65);
+  transition: width 0.8s cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+
+/* =========================================================
+   6. HOME — SANKALPA SHEET
+   ========================================================= */
+
+.ty-sheet {
+  margin: 18px 16px 0;
+  padding: 18px 15px 16px;
+  border-radius: 24px;
+  border: 1px solid var(--ty-line);
+  background: linear-gradient(180deg,
+    rgba(47, 29, 14, 0.88), rgba(17, 9, 4, 0.94));
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 220, 150, 0.10);
+}
+
+.ty-sh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 13px;
+}
+
+.ty-sh h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-family: var(--ty-serif);
+  font-size: 19.5px;
+  font-weight: 600;
+  color: var(--ty-cream);
+}
+
+.ty-sh h2 i {
+  font-style: normal;
+  font-size: 14px;
+  color: var(--ty-gold);
+}
+
+.ty-sh button {
+  background: none;
+  border: 0;
+  font-family: var(--ty-serif);
+  font-size: 12.5px;
+  color: var(--ty-gold);
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.ty-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 9px;
+  padding: 11px 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(244, 195, 106, 0.13);
+  background: linear-gradient(180deg,
+    rgba(80, 50, 21, 0.42), rgba(28, 16, 7, 0.5));
+  font-family: var(--ty-serif);
+  color: var(--ty-cream);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.ty-item:active {
+  transform: scale(0.985);
+  border-color: rgba(244, 195, 106, 0.35);
+}
+
+.ty-ic {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  border: 1px solid rgba(244, 195, 106, 0.38);
+  background: radial-gradient(circle at 34% 28%,
+    rgba(255, 205, 120, 0.28), rgba(38, 21, 9, 0.92));
+  box-shadow: 0 0 14px rgba(244, 180, 80, 0.2);
+}
+
+.ty-tx { flex: 1; min-width: 0; }
+
+.ty-tx .t {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ty-tx .w {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--ty-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ty-pg { flex: none; width: 104px; }
+
+.ty-pg .bar {
+  height: 5px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 220, 160, 0.12);
+}
+
+.ty-pg .bar i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ty-gold-2), #FFE6AB);
+  box-shadow: 0 0 9px rgba(244, 180, 80, 0.55);
+}
+
+.ty-pg .n {
+  margin-top: 5px;
+  font-size: 10.5px;
+  color: var(--ty-muted);
+}
+
+.ty-cv {
+  font-size: 15px;
+  color: var(--ty-gold);
+  opacity: 0.6;
+}
+
+.ty-empty {
+  padding: 22px 8px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ty-muted);
+}
+
+.ty-cta {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 15px;
+  border: 1px solid rgba(255, 230, 170, 0.55);
+  border-radius: 14px;
+  font-family: var(--ty-serif);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3.2px;
+  color: #2A1607;
+  cursor: pointer;
+
+  background: linear-gradient(180deg, #FFD684, #E8A317 52%, #B9741A);
+  box-shadow:
+    0 10px 26px rgba(232, 163, 23, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  transition: transform 0.18s ease;
+}
+
+.ty-cta:active { transform: scale(0.98); }
+
+
+/* =========================================================
+   7. BOTTOM NAV
+   ========================================================= */
+
+.bottom-nav.ty-nav {
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: auto;
+  max-width: 406px;
+  margin: 0 auto;
+  transform: none;
+  border: 1px solid var(--ty-line);
+  border-radius: 20px;
+  padding: 9px 4px max(7px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg,
+    rgba(47, 29, 14, 0.94), rgba(13, 7, 3, 0.97));
+  box-shadow: 0 -8px 34px rgba(0, 0, 0, 0.7);
+}
+
+.bottom-nav.ty-nav .nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: 0;
+  font-family: var(--ty-serif);
+  font-size: 18px;
+  color: var(--ty-muted);
+  cursor: pointer;
+}
+
+.bottom-nav.ty-nav .nav-btn span {
+  font-size: 9.5px;
+  letter-spacing: 0.3px;
+}
+
+.bottom-nav.ty-nav .nav-btn.active { color: var(--ty-gold); }
+
+.bottom-nav.ty-nav .nav-btn.active::after {
+  content: "";
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ty-gold);
+  box-shadow: 0 0 9px var(--ty-gold);
+}
+
+
+/* =========================================================
+   8. ACCESSIBILITY / MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .ty-mandala,
+  .ty-ember,
+  .ty-halo,
+  .ty-aarti,
+  .ty-lamps span,
+  .ty-doorway-om,
+  .ty-doorway-diya { animation: none !important; }
+
+  .ty-shrine-open .ty-curtain.l { animation: none; transform: translateX(-89%); }
+  .ty-shrine-open .ty-curtain.r { animation: none; transform: translateX(89%);  }
+  .ty-shrine-open .ty-bloom     { animation: none; }
+}
+
+
+/* =========================================================
+   9. SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .ty-sanctum { height: 372px; }
+  .ty-frame   { width: 258px; height: 274px;
+                border-radius: 129px 129px 14px 14px; }
+  .ty-frame-in{ border-radius: 123px 123px 9px 9px; }
+  .ty-lamps   { top: 290px; width: 340px; }
+  .ty-plinth  { top: 318px; width: 318px; }
+  .ty-cap     { top: 344px; }
+  .ty-toran   { width: 322px; }
+  .ty-pg      { width: 88px; }
+}
+
+
+/* =========================================================
+   10. STACKING
+   The ambient backdrop is a fixed, positioned layer, so the
+   screens must be lifted above it or their in-flow content
+   gets painted over by the vignette.
+   ========================================================= */
+
+.screen {
+  position: relative;
+  z-index: 1;
+}
+
+/* the gate owns the whole viewport — no nav bar behind it */
+.ty-gate:not(.ty-hidden) ~ .bottom-nav {
+  display: none;
+}

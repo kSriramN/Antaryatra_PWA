@@ -37,6 +37,13 @@ let energy =
   Number(localStorage.getItem("antar-yatra-energy") || 72);
 
 
+// How much Inner Energy was gained today (shown next to the number).
+const TODAY_KEY = "antar-yatra-gain-" + new Date().toDateString();
+
+let todayGain =
+  Number(localStorage.getItem(TODAY_KEY) || 0);
+
+
 // =========================================
 // HELPERS
 // =========================================
@@ -54,6 +61,11 @@ function save() {
   localStorage.setItem(
     "antar-yatra-energy",
     String(energy)
+  );
+
+  localStorage.setItem(
+    TODAY_KEY,
+    String(todayGain)
   );
 }
 
@@ -137,80 +149,119 @@ function showScreen(screenId) {
 
 function renderHome() {
 
+  // ---- Inner Energy ----
   $("energyValue").textContent = energy;
 
-  const list = $("todayList");
+  const pct = Math.max(0, Math.min(100, energy));
 
+  const bar = $("tyEnergyBar");
+  if (bar) bar.style.width = pct + "%";
+
+  const arc = $("tyEnergyArc");
+  if (arc) arc.setAttribute("stroke-dasharray", pct + " 100");
+
+  const delta = $("tyEnergyDelta");
+  if (delta) {
+    delta.textContent =
+      todayGain > 0 ? "\u25B2 +" + todayGain + " today" : "";
+  }
+
+
+  // ---- Greeting follows the hour ----
+  renderGreeting();
+
+
+  // ---- Today's Sankalpas ----
+  const list = $("todayList");
   list.innerHTML = "";
 
+  const active =
+    sankalpas.filter(s => s.completed < s.duration);
 
-  sankalpas
-    .slice(0, 5)
+  if (active.length === 0) {
+
+    list.innerHTML =
+      '<div class="ty-empty">' +
+      'No Sankalpa yet. Make your first resolve below.' +
+      '</div>';
+
+    return;
+  }
+
+
+  active
+    .slice(0, 4)
     .forEach(s => {
+
+      const unit =
+        s.frequency === "weekly" ? "weeks" : "days";
 
       const card =
         document.createElement("button");
 
-      card.className =
-        "sankalpa-card";
-
+      card.className = "ty-item";
 
       card.innerHTML = `
 
-        <div class="card-row">
-
-          <div class="card-icon">
-            ${s.icon}
-          </div>
-
-          <div class="card-title">
-
-            <strong>
-              ${escapeHtml(s.title)}
-            </strong>
-
-            <span>
-              ${s.completed} / ${s.duration}
-              ${s.frequency === "weekly"
-                ? "weeks"
-                : "days"}
-            </span>
-
-          </div>
-
-          <div class="check">
-
-            ${
-              s.completed >= s.duration
-                ? "✓"
-                : "›"
-            }
-
-          </div>
-
+        <div class="ty-ic">
+          ${s.icon}
         </div>
 
-
-        <div class="progress">
-
-          <div
-            style="width:${progressFor(s)}%"
-          ></div>
-
+        <div class="ty-tx">
+          <div class="t">${escapeHtml(s.title)}</div>
+          <div class="w">${escapeHtml(s.why || "Your daily practice")}</div>
         </div>
 
+        <div class="ty-pg">
+          <div class="bar">
+            <i style="width:${progressFor(s)}%"></i>
+          </div>
+          <div class="n">${s.completed} / ${s.duration} ${unit}</div>
+        </div>
+
+        <div class="ty-cv">\u203A</div>
       `;
-
 
       card.addEventListener(
         "click",
         () => openDetail(s.id)
       );
 
-
       list.appendChild(card);
 
     });
+}
+
+
+// =========================================
+// GREETING BY TIME OF DAY
+// =========================================
+
+function renderGreeting() {
+
+  const el = $("tyGreeting");
+  const sub = $("tyGreetingSub");
+
+  if (!el) return;
+
+  const h = new Date().getHours();
+
+  let dv = "\u0936\u0941\u092D \u092A\u094D\u0930\u092D\u093E\u0924";
+  let en = "May your day be blessed";
+
+  if (h >= 12 && h < 17) {
+    dv = "\u0936\u0941\u092D \u0926\u093F\u0928";
+    en = "May your day be blessed";
+  } else if (h >= 17 && h < 21) {
+    dv = "\u0936\u0941\u092D \u0938\u0902\u0927\u094D\u092F\u093E";
+    en = "May your evening be peaceful";
+  } else if (h >= 21 || h < 5) {
+    dv = "\u0936\u0941\u092D \u0930\u093E\u0924\u094D\u0930\u093F";
+    en = "Rest well, the journey continues";
+  }
+
+  el.textContent = dv;
+  if (sub) sub.textContent = en;
 }
 
 
@@ -437,11 +488,15 @@ function completePractice(id) {
   s.completed += 1;
 
 
+  const before = energy;
+
   energy =
     Math.min(
       100,
       energy + 3
     );
+
+  todayGain += (energy - before);
 
 
   save();
@@ -644,106 +699,147 @@ $("closeCelebration")
 
 
 // =========================================
-// TEMPLE ENTRANCE → LORD RAM DARSHAN
+// TEMPLE GATE -> DARSHAN
+//
+// Leaving the gate does not cut to the home
+// screen.  The home screen appears with the
+// sanctum curtain (pardah) still closed, and
+// the curtain then parts for darshan.
 // =========================================
 
-const enterTempleBtn =
-  $("enterTempleBtn");
+const DARSHAN_KEY = "antar-yatra-darshan-taken";
 
-const templeEntrance =
-  $("templeEntrance");
-
-const ramReveal =
-  $("ramReveal");
+const enterTempleBtn = $("enterTempleBtn");
+const templeEntrance = $("templeEntrance");
+const shrine = $("tyShrine");
 
 
-enterTempleBtn
-  .addEventListener(
+function openCurtain(delay) {
+
+  if (!shrine) return;
+
+  setTimeout(
+    () => {
+
+      shrine.classList.add("ty-shrine-open");
+
+      try {
+        sessionStorage.setItem(DARSHAN_KEY, "1");
+      } catch (e) {
+        /* private mode — the curtain simply opens again next time */
+      }
+
+    },
+    delay
+  );
+}
+
+
+if (enterTempleBtn) {
+
+  enterTempleBtn.addEventListener(
     "click",
     () => {
 
-      // First fade out the Temple Entrance.
-      templeEntrance
-        .classList
-        .add("exit");
+      templeEntrance.classList.add("ty-exit");
 
-
-      // After the entrance has faded,
-      // reveal Lord Ram.
       setTimeout(
         () => {
 
-          templeEntrance
-            .classList
-            .add("hidden");
+          templeEntrance.classList.add("ty-hidden");
 
-
-          ramReveal
-            .classList
-            .remove("leaving");
-
-
-          ramReveal
-            .classList
-            .add("active");
-
+          showScreen("homeScreen");
 
           /*
-           * Keep Lord Ram visible for
-           * approximately 2.8 seconds.
-           *
-           * Then reveal the existing
-           * Home screen and begin the
-           * gentle Ram fade-out.
+           * A breath of stillness first — long enough to
+           * register the closed pardah — then darshan.
            */
-
-          setTimeout(
-            () => {
-
-              showScreen(
-                "homeScreen"
-              );
-
-
-              ramReveal
-                .classList
-                .add("leaving");
-
-            },
-            2800
-          );
-
-
-          /*
-           * Remove the Ram overlay completely
-           * after the 1.2 second fade-out.
-           */
-
-          setTimeout(
-            () => {
-
-              ramReveal
-                .classList
-                .remove(
-                  "active",
-                  "leaving"
-                );
-
-            },
-            4100
-          );
+          openCurtain(1100);
 
         },
-        1000
+        900
       );
 
     }
   );
+}
+
+
+// =========================================
+// AMBIENT DETAIL
+// Embers drifting through the hall, and the
+// mango-leaf toran strung across the shrine.
+// =========================================
+
+function paintEmbers() {
+
+  const host = $("tyEmbers");
+  if (!host) return;
+
+  let html = "";
+
+  for (let i = 0; i < 46; i += 1) {
+
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    const scale = 0.5 + Math.random() * 1.8;
+    const dur = 14 + Math.random() * 22;
+    const delay = -Math.random() * 30;
+
+    html +=
+      '<span class="ty-ember" style="' +
+      'left:' + x.toFixed(2) + '%;' +
+      'top:' + y.toFixed(2) + '%;' +
+      'opacity:' + (0.12 + Math.random() * 0.6).toFixed(2) + ';' +
+      '--s:' + scale.toFixed(2) + ';' +
+      'animation-duration:' + dur.toFixed(1) + 's;' +
+      'animation-delay:' + delay.toFixed(1) + 's;' +
+      '"></span>';
+  }
+
+  host.innerHTML = html;
+}
+
+
+function paintToran() {
+
+  const host = $("tyToran");
+  if (!host) return;
+
+  const N = 26;
+  const marigold = ["#F0A72B", "#FFD257", "#E2622A"];
+
+  let svg = "";
+
+  for (let i = 0; i <= N; i += 1) {
+
+    const u = i / N;
+    const x = 10 + u * 332;
+    const y = 10 + Math.sin(u * Math.PI) * 54;
+
+    svg +=
+      '<path d="M' + x.toFixed(1) + ' ' + y.toFixed(1) +
+      ' q4.6 8 0 17 q-4.6-9 0-17z" fill="' +
+      (i % 2 ? "#2F6B2A" : "#3D8A33") + '" opacity=".92"/>';
+
+    if (i % 3 === 0) {
+      svg +=
+        '<circle cx="' + x.toFixed(1) + '" cy="' + (y - 2).toFixed(1) +
+        '" r="3.4" fill="' + marigold[i % 3] + '"/>';
+    }
+  }
+
+  host.innerHTML = svg;
+}
 
 
 // =========================================
 // INITIALIZE
 // =========================================
+
+paintEmbers();
+
+paintToran();
 
 renderHome();
 
@@ -761,6 +857,31 @@ document
     );
 
   });
+
+
+/*
+ * If darshan was already taken in this session,
+ * skip the gate and leave the curtain open.
+ */
+
+let darshanTaken = false;
+
+try {
+  darshanTaken =
+    sessionStorage.getItem(DARSHAN_KEY) === "1";
+} catch (e) {
+  darshanTaken = false;
+}
+
+
+if (darshanTaken) {
+
+  templeEntrance.classList.add("ty-hidden");
+
+  shrine.classList.add("ty-shrine-still");
+
+  showScreen("homeScreen");
+}
 
 
 if ("serviceWorker" in navigator) {
