@@ -1,0 +1,18 @@
+{
+  "name": "Antar Yatra — Hindu Personal Growth",
+  "short_name": "Antar Yatra",
+  "description": "A temple-inspired Sankalpa and personal spiritual growth PWA.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#120a05",
+  "theme_color": "#1b1008",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
